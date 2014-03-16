@@ -8,20 +8,11 @@ class LLCPlays(irc.bot.SingleServerIRCBot):
 			glue = json.load(f)
 			self.users = glue[u'users']
 			self.admins = glue[u'admins']
+			self.commands = glue[u'commands']
 
 		irc.bot.SingleServerIRCBot.__init__(self, [(server, port, secret)], nickname, nickname)
 		self.channel = channel
 		self.k = PyKeyboard()
-		self.commands = {
-			'up':    	'w',
-			'left':  	'a',
-			'down':  	's',
-			'right': 	'd',
-			'a':     	'z',
-			'b':     	'x',
-			'start': 	'c',
-			'select':	'v'
-		}
 		self.admincommands = {
 			'!die':	lambda: self.die(),
 		}
