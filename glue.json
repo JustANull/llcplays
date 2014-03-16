@@ -2,14 +2,21 @@
 	"users": ["just_a_null", "drewbiedoobydoo", "ma1dridge", "zelshey", "shatteredaether", "thisisdaleb", "roly_25", "ianthejay"],
 	"admins": ["just_a_null", "ma1dridge"],
 	"commands": {
-		"up":    	"w",
-		"left":  	"a",
-		"down":  	"s",
-		"right": 	"d",
-		"a":     	"z",
-		"b":     	"x",
-		"start": 	"c",
-		"Kappa": 	"c",
-		"select":	"v"
+		"up":             	"w",
+		"WinWaker":       	"w",
+		"left":           	"a",
+		"ResidentSleeper":	"a",
+		"down":           	"s",
+		"SwiftRage":      	"s",
+		"right":          	"d",
+		"Kreygasm":       	"d",
+		"a":              	"z",
+		"FrankerZ":       	"z",
+		"b":              	"x",
+		"BibleThump":     	"x",
+		"start":          	"c",
+		"Kappa":          	"c",
+		"select":         	"v",
+		"Keepo":          	"v"
 	}
 }
