@@ -18,5 +18,11 @@
 		"Kappa":          	"c",
 		"select":         	"v",
 		"Keepo":          	"v"
+	},
+	"window": {
+		"width":   	320,
+		"height":  	240,
+		"fontsize":	16,
+		"fontname":	"Courier"
 	}
 }
