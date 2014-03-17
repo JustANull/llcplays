@@ -1,9 +1,11 @@
 {
-	"username": "llcplays",
-	"port": 6667,
-	"channel": "#llcplays",
 	"users": ["just_a_null", "callmepickle", "drewbiedoobydoo", "ma1dridge", "zelshey", "shatteredaether", "thisisdaleb", "roly_25", "ianthejay"],
 	"admins": ["llcplays", "just_a_null", "ma1dridge"],
+	"irc": {
+		"username": "llcplays",
+		"port": 6667,
+		"channel": "#llcplays"
+	},
 	"commands": {
 		"up":             	"w",
 		"WinWaker":       	"w",
@@ -22,12 +24,12 @@
 		"select":         	"v",
 		"Keepo":          	"v"
 	},
+	"bannedWords": ["kappa"],
 	"window": {
 		"title":   	"Song: Darude - Sandstorm",
 		"width":   	320,
 		"height":  	240,
 		"fontsize":	16,
 		"fontname":	"Courier"
-	},
-	"bannedWords": ["kappa"]
+	}
 }

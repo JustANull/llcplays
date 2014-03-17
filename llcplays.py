@@ -1,13 +1,15 @@
 #! /usr/bin/env python
 
+#note that save and load savestates are hardcoded to e and q, respectively.
+
 import irc.bot
 import json
 import logging
 import math
 import sys
-import time
 from pykeyboard import PyKeyboard
 import pygame
+import subprocess
 
 class IRCOptions():
 	def __init__(self, server, port, channel, nickname, secret):
@@ -42,6 +44,11 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 		self.subscribers[identity].on_remove()
 		del self.subscribers[identity]
 
+	def remove_all_subscribers(self):
+		for sub in self.subscribers:
+			self.subscribers[sub].on_remove()
+		self.subscribers = {}
+
 	def get_subscriber(self, identity):
 		return self.subscribers[identity]
 
@@ -51,6 +58,7 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
 	def on_welcome(self, conn, event):
 		conn.join(self.channel)
+		conn.privmsg(self.channel, 'Now online!')
 
 	def on_privmsg(self, conn, event):
 		for sub in self.subscribers:
@@ -141,7 +149,9 @@ class Display(TwitchSubscriber):
 		self.commands = commands
 
 	def on_add(self, bot):
+		self.bot = bot
 		pygame.init()
+		pygame.time.set_timer(pygame.USEREVENT + 0, 32768)
 		self.screen = pygame.display.set_mode((self.width, self.height))
 		pygame.display.set_caption(self.title)
 		self.font = pygame.font.SysFont(self.fontname, self.fontsize)
@@ -166,9 +176,11 @@ class Display(TwitchSubscriber):
 				if event.type == pygame.QUIT:
 					sys.exit()
 				elif event.type == pygame.USEREVENT + 0:
-					sys.exit()
+					pygame.time.set_timer(pygame.USEREVENT + 0, 0)
+					pygame.time.set_timer(pygame.USEREVENT + 1, 1000 * 60 * 5)
+					self.bot.get_subscriber('control').raw_command('q')
 				elif event.type == pygame.USEREVENT + 1:
-					pygame.quit()
+					self.bot.get_subscriber('control').raw_command('e')
 
 		self.screen.fill((0, 0, 0))
 
@@ -193,6 +205,9 @@ class Control(TwitchSubscriber):
 		if event.source.nick in self.users and event.arguments[0] in self.commands:
 			self.do_command(event.arguments[0])
 
+	def raw_command(self, cmd):
+		pass
+
 	def do_command(self, cmd):
 		pass
 
@@ -201,6 +216,9 @@ class ControlKeyboard(Control):
 		Control.__init__(self, users, commands)
 		self.k = PyKeyboard()
 
+	def raw_command(self, cmd):
+		self.k.tap_key(cmd)
+
 	def do_command(self, cmd):
 		self.k.tap_key(self.commands[cmd])
 
@@ -208,6 +226,10 @@ class ControlStdout(Control):
 	def __init__(self, users, commands, fp = sys.stdout):
 		Control.__init__(self, users, commands)
 		self.fp = fp
+
+	def raw_command(self, cmd):
+		self.fp.write(cmd)
+		self.fp.flush()
 
 	def do_command(self, cmd):
 		self.fp.write(self.commands[cmd])
@@ -228,8 +250,18 @@ class Moderator(TwitchSubscriber):
 					self.bot.get_subscriber('display').add_message('kicked user:', event.source.nick)
 					conn.privmsg(self.bot.channel, '.timeout ' + event.source.nick + ' 1')
 
+class Subprocess(TwitchSubscriber):
+	def __init__(self, commands):
+		self.commands = commands
+
+	def on_add(self, bot):
+		self.process = popen(self.commands)
+
+	def on_remove(self):
+		self.process.terminate()
+
 def main():
-	logging.basicConfig(level = logging.DEBUG)
+	#logging.basicConfig(level = logging.DEBUG)
 
 	secret = ''
 	with file('secret.json') as f:
@@ -243,8 +275,12 @@ def main():
 	bannedWords = []
 	with file('config.json') as f:
 		config = json.load(f)
-		ircopt = IRCOptions('irc.twitch.tv', config[u'port'], config[u'channel'], config[u'username'], secret)
-		winopt = WindowOptions(config[u'window'][u'title'], config[u'window'][u'width'], config[u'window'][u'height'], config[u'window'][u'fontsize'], config[u'window'][u'fontname'])
+		irc = config[u'irc']
+		window = config[u'window']
+
+		ircopt = IRCOptions('irc.twitch.tv', irc[u'port'], irc[u'channel'], irc[u'username'], secret)
+		winopt = WindowOptions(window[u'title'], window[u'width'], window[u'height'], window[u'fontsize'], window[u'fontname'])
+
 		users = config[u'users']
 		admins = config[u'admins']
 		commands = config[u'commands']
@@ -254,6 +290,7 @@ def main():
 	bot.add_subscriber('admin', Admin(admins))
 	bot.add_subscriber('display', Display(winopt, users, commands))
 	bot.add_subscriber('moderator', Moderator(admins, bannedWords))
+	#bot.add_subscriber('emulator', Subprocess(['run_emulator']))
 
 	if len(sys.argv) == 1:
 		bot.add_subscriber('control', ControlStdout(users, commands))
@@ -271,6 +308,7 @@ def main():
 
 	bot.event_loop()
 	if bot.restart:
+		bot.remove_all_subscribers()
 		main()
 
 if __name__ == '__main__':
