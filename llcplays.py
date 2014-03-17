@@ -18,7 +18,8 @@ class IRCOptions():
 		self.secret = secret
 
 class WindowOptions():
-	def __init__(self, width, height, fontsize, fontname):
+	def __init__(self, title, width, height, fontsize, fontname):
+		self.title = title
 		self.width = width
 		self.height = height
 		self.fontsize = fontsize
@@ -27,9 +28,11 @@ class WindowOptions():
 class TwitchBot(irc.bot.SingleServerIRCBot):
 	def __init__(self, ircopt):
 		irc.bot.SingleServerIRCBot.__init__(self, [(ircopt.server, ircopt.port, ircopt.secret)], ircopt.nickname, ircopt.nickname)
+		self.connection.set_rate_limit(0.75)
 		self.channel = ircopt.channel
 		self.subscribers = {}
 		self.live = True
+		self.restart = False
 
 	def add_subscriber(self, identity, sub):
 		self.subscribers[identity] = sub
@@ -74,6 +77,8 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 			for sub in self.subscribers:
 				self.subscribers[sub].on_update()
 
+		self.disconnect()
+
 class TwitchSubscriber():
 	def __init__(self):
 		pass
@@ -104,10 +109,17 @@ class Admin(TwitchSubscriber):
 		self.admins = admins
 		self.admincommands = {
 			'!die': self.do_die,
+			'!restart': self.do_restart
 		}
 
 	def do_die(self):
+		self.bot.connection.privmsg(self.bot.channel, 'The bot is going down for maintenance, NOW!')
 		self.bot.live = False
+
+	def do_restart(self):
+		self.bot.connection.privmsg(self.bot.channel, 'The bot is restarting for maintenance, NOW!')
+		self.bot.live = False
+		self.bot.restart = True
 
 	def on_add(self, bot):
 		self.bot = bot
@@ -118,9 +130,9 @@ class Admin(TwitchSubscriber):
 
 class Display(TwitchSubscriber):
 	def __init__(self, winopt, users, commands):
-		pygame.init()
 		self.messages = [('Bot initialized!', '')]
 
+		self.title = winopt.title
 		self.width = winopt.width
 		self.height = winopt.height
 		self.fontsize = winopt.fontsize
@@ -129,19 +141,24 @@ class Display(TwitchSubscriber):
 		self.commands = commands
 
 	def on_add(self, bot):
+		pygame.init()
 		self.screen = pygame.display.set_mode((self.width, self.height))
+		pygame.display.set_caption(self.title)
 		self.font = pygame.font.SysFont(self.fontname, self.fontsize)
 		self.maxMessages = int(math.ceil(self.height / self.font.get_height())) + 1
 
 	def on_remove(self):
 		pygame.quit()
 
+	def add_message(self, left, right):
+		self.messages.insert(0, (left, right))
+
+		if len(self.messages) > self.maxMessages:
+			self.messages = self.messages[:self.maxMessages]
+
 	def on_pubmsg(self, conn, event):
 		if event.source.nick in self.users and event.arguments[0] in self.commands:
-			self.messages.insert(0, (event.source.nick, event.arguments[0]))
-
-			if len(self.messages) > self.maxMessages:
-				self.messages = self.messages[:self.maxMessages]
+			self.add_message(event.source.nick, event.arguments[0])
 
 	def on_update(self):
 		if pygame.event.peek():
@@ -196,7 +213,24 @@ class ControlStdout(Control):
 		self.fp.write(self.commands[cmd])
 		self.fp.flush()
 
+class Moderator(TwitchSubscriber):
+	def __init__(self, admins, bannedWords):
+		self.admins = admins
+		self.bannedWords = bannedWords
+
+	def on_add(self, bot):
+		self.bot = bot
+
+	def on_pubmsg(self, conn, event):
+		if not event.source.nick in self.admins:
+			for word in self.bannedWords:
+				if event.arguments[0].lower().find(word.lower()) != -1:
+					self.bot.get_subscriber('display').add_message('kicked user:', event.source.nick)
+					conn.privmsg(self.bot.channel, '.timeout ' + event.source.nick + ' 1')
+
 def main():
+	logging.basicConfig(level = logging.DEBUG)
+
 	secret = ''
 	with file('secret.json') as f:
 		secret = json.load(f)[u'secret']
@@ -206,17 +240,20 @@ def main():
 	users = []
 	admins = []
 	commands = {}
+	bannedWords = []
 	with file('config.json') as f:
 		config = json.load(f)
 		ircopt = IRCOptions('irc.twitch.tv', config[u'port'], config[u'channel'], config[u'username'], secret)
-		winopt = WindowOptions(config[u'window'][u'width'], config[u'window'][u'height'], config[u'window'][u'fontsize'], config[u'window'][u'fontname'])
+		winopt = WindowOptions(config[u'window'][u'title'], config[u'window'][u'width'], config[u'window'][u'height'], config[u'window'][u'fontsize'], config[u'window'][u'fontname'])
 		users = config[u'users']
 		admins = config[u'admins']
 		commands = config[u'commands']
+		bannedWords = config[u'bannedWords']
 
 	bot = TwitchBot(ircopt)
 	bot.add_subscriber('admin', Admin(admins))
 	bot.add_subscriber('display', Display(winopt, users, commands))
+	bot.add_subscriber('moderator', Moderator(admins, bannedWords))
 
 	if len(sys.argv) == 1:
 		bot.add_subscriber('control', ControlStdout(users, commands))
@@ -233,6 +270,8 @@ def main():
 		raise Exception('bad command line arguments')
 
 	bot.event_loop()
+	if bot.restart:
+		main()
 
 if __name__ == '__main__':
 	main()
