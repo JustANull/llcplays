@@ -54,14 +54,14 @@ To enable userlist checking, create a userlist in `config.json`. The one provide
 
 ### Default Commands
 
->	`WinWaker`: up  
->	`ResidentSleeper`: left  
->	`SwiftRage`: down  
->	`Kreygasm`: right  
->	`FrankerZ`: a  
->	`BibleThump`: b  
->	`Kappa`: start  
->	`Keepo`: select
+>	WinWaker: up  
+>	ResidentSleeper: left  
+>	SwiftRage: down  
+>	Kreygasm: right  
+>	FrankerZ: a  
+>	BibleThump: b  
+>	Kappa: start  
+>	Keepo: select
 
 Beyond these, up/down/left/right/b/a/start/select are also commands. The exact keymap is in `config.json`.
 
