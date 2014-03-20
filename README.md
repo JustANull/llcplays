@@ -20,13 +20,13 @@ Read this entire section!
 
 These are all what I developed on:
 
-python 2.7.6
+`python 2.7.6`
 
-irc-8.5.4 is what I developed the IRC features on.
+`irc-8.5.4` is what I developed the IRC features on.
 
-pygame is used to display the window of past commands.
+`pygame` is used to display the window of past commands.
 
-If you plan to use the direct keyboard output (that is, focus a window and have the bot virtually press keys), you'll have to install PyKeyboard.
+If you plan to use the direct keyboard output (that is, focus a window and have the bot virtually press keys), you'll have to install `PyKeyboard`.
 
 ### Various Details
 
