@@ -53,7 +53,7 @@ Saving and loading are hardcoded to the '2' and '1' keys respectively. The codes
 
 ### Secret Key
 
-You'll need to provide your secret key in `secret.json` so the bot can log into your channel.
+You'll need to provide your secret key in `secret.json` so the bot can log into your channel. Also, you *aren't* llcplays, so you'll need to change the preconfigured username and channel name. You *can* run the bot in the wrong channel. Please don't do this.
 
 Example `secret.json`:
 
