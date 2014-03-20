@@ -28,7 +28,18 @@ These are all what I developed on:
 
 `pygame` is used to display the window of past commands.
 
-If you plan to use the direct keyboard output (that is, focus a window and have the bot virtually press keys), you'll have to install `PyKeyboard`.
+If you plan to use the direct keyboard output (that is, focus a window and have the bot virtually press keys), you'll have to install `PyKeyboard`. Otherwise, standard out is the default. You can specify a file in the command line.
+
+### Command Line
+
+    ./llcplays.py  
+    Will run, outputting commands to standard out.  
+    ./llcplays.py stdout  
+    ditto  
+    ./llcplays.py keyboard  
+    Will run, outputting commands to the keyboard.  
+    ./llcplays.py stdout filename  
+    Will run, outputting commands to the file with the given name.
 
 ### Various Details
 
