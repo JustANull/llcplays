@@ -56,9 +56,9 @@ To enable userlist checking, create a userlist in `config.json`. The one provide
 
 Several commands are supported in chat by default from a list of admins in the config file. They are:
 
->	`!die`: Cleans up the process and ends gracefully.
->	`!restart`: Cleans up a little bit and restarts the IRC, display, emulator, etc.
->	`!save`: Forces a savestate.
+>	`!die`: Cleans up the process and ends gracefully.  
+>	`!restart`: Cleans up a little bit and restarts the IRC, display, emulator, etc.  
+>	`!save`: Forces a savestate.  
 >	`!load`: Forces a load of the last savestate.
 
 ### Banned Words
