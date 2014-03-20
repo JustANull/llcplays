@@ -1,5 +1,5 @@
 {
-	"users": ["just_a_null", "callmepickle", "drewbiedoobydoo", "ma1dridge", "zelshey", "shatteredaether", "thisisdaleb", "roly_25", "ianthejay"],
+	"users": ["just_a_null", "drewbiedoobydoo", "ma1dridge", "zelshey", "shatteredaether", "thisisdaleb", "roly_25", "ianthejay"],
 	"admins": ["llcplays", "just_a_null", "ma1dridge"],
 	"irc": {
 		"username": "llcplays",
@@ -22,14 +22,16 @@
 		"start":          	"c",
 		"Kappa":          	"c",
 		"select":         	"v",
-		"Keepo":          	"v"
+		"Keepo":          	"v",
+		"l":              	"q",
+		"r":              	"e"
 	},
 	"bannedWords": ["kappa"],
 	"window": {
 		"title":   	"Song: Darude - Sandstorm",
 		"width":   	320,
 		"height":  	240,
-		"fontsize":	16,
+		"fontsize":	18,
 		"fontname":	"Courier"
 	}
 }

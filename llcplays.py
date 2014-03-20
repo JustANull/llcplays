@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 
-#note that save and load savestates are hardcoded to e and q, respectively.
+#note that save and load savestates are hardcoded to 2 and 1, respectively.
 
+import datetime
 import irc.bot
 import json
 import logging
@@ -10,6 +11,9 @@ import sys
 from pykeyboard import PyKeyboard
 import pygame
 import subprocess
+
+LOAD_BUTTON = '1'
+SAVE_BUTTON = '2'
 
 class IRCOptions():
 	def __init__(self, server, port, channel, nickname, secret):
@@ -30,7 +34,7 @@ class WindowOptions():
 class TwitchBot(irc.bot.SingleServerIRCBot):
 	def __init__(self, ircopt):
 		irc.bot.SingleServerIRCBot.__init__(self, [(ircopt.server, ircopt.port, ircopt.secret)], ircopt.nickname, ircopt.nickname)
-		self.connection.set_rate_limit(0.75)
+		self.connection.set_rate_limit(0.75)	#if you send more than 20 messages in 30 seconds to Twitch, you get banned for 8 hours
 		self.channel = ircopt.channel
 		self.subscribers = {}
 		self.live = True
@@ -53,7 +57,6 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 		return self.subscribers[identity]
 
 	def on_nicknameinuse(self, conn, event):
-		logging.critical('Nickname was already in use! This should NEVER happen! Are you running multiple instances?')
 		raise Exception('nickname in use')
 
 	def on_welcome(self, conn, event):
@@ -87,6 +90,12 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
 
 		self.disconnect()
 
+	def say(self, message):
+		self.connection.privmsg(self.channel, message)
+
+	def kick(self, username):
+		self.connection.privmsg(self.channel, '.timeout ' + username + ' 1')
+
 class TwitchSubscriber():
 	def __init__(self):
 		pass
@@ -116,18 +125,28 @@ class Admin(TwitchSubscriber):
 	def __init__(self, admins):
 		self.admins = admins
 		self.admincommands = {
-			'!die': self.do_die,
-			'!restart': self.do_restart
+			'!die':    	self.do_die,
+			'!restart':	self.do_restart,
+			'!save':   	self.do_save,
+			'!load':   	self.do_load
 		}
 
 	def do_die(self):
-		self.bot.connection.privmsg(self.bot.channel, 'The bot is going down for maintenance, NOW!')
+		self.bot.say('The bot is going down for maintenance, NOW!')
 		self.bot.live = False
 
 	def do_restart(self):
-		self.bot.connection.privmsg(self.bot.channel, 'The bot is restarting for maintenance, NOW!')
+		self.bot.say('The bot is restarting, NOW!')
 		self.bot.live = False
 		self.bot.restart = True
+
+	def do_save(self):
+		self.bot.get_subscriber('display').add_message('Saved the game.', '')
+		self.bot.get_subscriber('control').raw_command(SAVE_BUTTON)
+
+	def do_load(self):
+		self.bot.get_subscriber('display').add_message('Loaded the game.', '')
+		self.bot.get_subscriber('control').raw_command(LOAD_BUTTON)
 
 	def on_add(self, bot):
 		self.bot = bot
@@ -138,7 +157,7 @@ class Admin(TwitchSubscriber):
 
 class Display(TwitchSubscriber):
 	def __init__(self, winopt, users, commands):
-		self.messages = [('Bot initialized!', '')]
+		self.messages = []
 
 		self.title = winopt.title
 		self.width = winopt.width
@@ -151,20 +170,42 @@ class Display(TwitchSubscriber):
 	def on_add(self, bot):
 		self.bot = bot
 		pygame.init()
-		pygame.time.set_timer(pygame.USEREVENT + 0, 32768)
+		pygame.time.set_timer(pygame.USEREVENT + 0, 10000)	#in 10 seconds, load the saved game; assume that emulator is started
 		self.screen = pygame.display.set_mode((self.width, self.height))
-		pygame.display.set_caption(self.title)
+		pygame.display.set_caption('')
 		self.font = pygame.font.SysFont(self.fontname, self.fontsize)
-		self.maxMessages = int(math.ceil(self.height / self.font.get_height())) + 1
+		self.maxMessages = int(math.ceil(self.height / self.font.get_height())) - 1
+		self.add_message('Bot initialized!', '')
 
 	def on_remove(self):
 		pygame.quit()
+
+	def render(self):
+		self.screen.fill((0, 0, 0))
+
+		xpos = (self.width - self.font.size(self.title)[0]) / 2
+		self.screen.blit(self.font.render(self.title, 1, (255, 255, 255)), (xpos, 0))
+
+		for i in range(len(self.messages)):
+			leftText = self.font.render(self.messages[i][0], 1, (255, 255, 255))
+			rightText = self.font.render(self.messages[i][1], 1, (255, 255, 255))
+			ypos = self.height - (i + 1) * self.font.get_height()
+			self.screen.blit(leftText, (8, ypos))
+			self.screen.blit(rightText, (self.width - (8 + self.font.size(self.messages[i][1])[0]), ypos))
+
+		pygame.display.flip()
 
 	def add_message(self, left, right):
 		self.messages.insert(0, (left, right))
 
 		if len(self.messages) > self.maxMessages:
 			self.messages = self.messages[:self.maxMessages]
+
+		self.render()
+
+	def set_title(self, title):
+		self.title = title
+		self.render()
 
 	def on_pubmsg(self, conn, event):
 		if event.source.nick in self.users and event.arguments[0] in self.commands:
@@ -174,24 +215,14 @@ class Display(TwitchSubscriber):
 		if pygame.event.peek():
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
-					sys.exit()
+					self.bot.say('The bot is going down!')
+					self.bot.live = False
 				elif event.type == pygame.USEREVENT + 0:
-					pygame.time.set_timer(pygame.USEREVENT + 0, 0)
-					pygame.time.set_timer(pygame.USEREVENT + 1, 1000 * 60 * 5)
-					self.bot.get_subscriber('control').raw_command('q')
+					pygame.time.set_timer(pygame.USEREVENT + 0, 0)            	#stop loading the game every 10 seconds
+					pygame.time.set_timer(pygame.USEREVENT + 1, 1000 * 60 * 5)	#start saving it every 5 minutes
+					self.bot.get_subscriber('control').raw_command(LOAD_BUTTON)
 				elif event.type == pygame.USEREVENT + 1:
-					self.bot.get_subscriber('control').raw_command('e')
-
-		self.screen.fill((0, 0, 0))
-
-		for i in range(len(self.messages)):
-			leftText = self.font.render(self.messages[i][0], 1, (255, 255, 255), (0, 0, 0))
-			rightText = self.font.render(self.messages[i][1], 1, (255, 255, 255), (0, 0, 0))
-			ypos = self.height - (i + 1) * self.font.get_height()
-			self.screen.blit(leftText, (8, ypos))
-			self.screen.blit(rightText, (self.width - (8 + self.font.size(self.messages[i][1])[0]), ypos))
-
-		pygame.display.flip()
+					self.bot.get_subscriber('control').raw_command(SAVE_BUTTON)
 
 class Control(TwitchSubscriber):
 	def __init__(self, users, commands):
@@ -247,15 +278,14 @@ class Moderator(TwitchSubscriber):
 		if not event.source.nick in self.admins:
 			for word in self.bannedWords:
 				if event.arguments[0].lower().find(word.lower()) != -1:
-					self.bot.get_subscriber('display').add_message('kicked user:', event.source.nick)
-					conn.privmsg(self.bot.channel, '.timeout ' + event.source.nick + ' 1')
+					self.bot.kick(event.source.nick)
 
 class Subprocess(TwitchSubscriber):
 	def __init__(self, commands):
 		self.commands = commands
 
 	def on_add(self, bot):
-		self.process = popen(self.commands)
+		self.process = subprocess.Popen(self.commands)
 
 	def on_remove(self):
 		self.process.terminate()
@@ -292,23 +322,26 @@ def main():
 	bot.add_subscriber('moderator', Moderator(admins, bannedWords))
 	#bot.add_subscriber('emulator', Subprocess(['run_emulator']))
 
+	control = None
 	if len(sys.argv) == 1:
-		bot.add_subscriber('control', ControlStdout(users, commands))
+		control = ControlStdout(users, commands)
 	elif len(sys.argv) == 2:
 		if sys.argv[1] == 'keyboard':
-			bot.add_subscriber('control', ControlKeyboard(users, commands))
+			control = ControlKeyboard(users, commands)
 		elif sys.argv[1] == 'stdout':
-			bot.add_subscriber('control', ControlStdout(users, commands))
+			control = ControlStdout(users, commands)
 		else:
 			raise Exception('bad command line arguments')
 	elif len(sys.argv) == 3 and sys.argv[1] == 'stdout':
-		bot.add_subscriber('control', ControlStdout(users, commands, open(sys.argv[2], 'w')))
+		control = ControlStdout(users, commands, open(sys.argv[2], 'w'))
 	else:
 		raise Exception('bad command line arguments')
+	bot.add_subscriber('control', control)
 
 	bot.event_loop()
+	bot.remove_all_subscribers()
+
 	if bot.restart:
-		bot.remove_all_subscribers()
 		main()
 
 if __name__ == '__main__':
