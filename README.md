@@ -36,7 +36,7 @@ The automatic loading is currently (badly) in the display module and occurs 10 s
 
 Automatic saving currently occurs every 5 minutes and is also handled inside the display module.
 
-Saving and loading are hardcoded to the '2' and '1' keys respectively.
+Saving and loading are hardcoded to the '2' and '1' keys respectively. The codes are in `control.py`.
 
 ### Secret Key
 
@@ -51,6 +51,19 @@ Example `secret.json`:
 ### Userlist
 
 To enable userlist checking, create a userlist in `config.json`. The one provided by default admins me and my friends, and lets them on, while blocking everybody else. If you want to use this, you'll want to change that.
+
+### Default Commands
+
+>	`WinWaker`: up  
+>	`ResidentSleeper`: left  
+>	`SwiftRage`: down  
+>	`Kreygasm`: right  
+>	`FrankerZ`: a  
+>	`BibleThump`: b  
+>	`Kappa`: start  
+>	`Keepo`: select
+
+Beyond these, up/down/left/right/b/a/start/select are also commands. The exact keymap is in `config.json`.
 
 ### Admin List
 
