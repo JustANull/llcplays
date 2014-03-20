@@ -4,12 +4,66 @@ LLCPlays
 What's the point?
 -----------------
 
-This project is intended to be a complete TwitchPlaysPokemon style bot set up for my personal use.
+This project is intended to be a complete TwitchPlaysPokemon style bot initially set up for my personal use.
 
 Can I use it?
 -------------
 
 Knock yourself out. I'm not going to stop you. If you want to remove the userlist support (e.g. allow anybody to use your bot) you'll need to edit `control.py`.
+
+How do I use it?
+----------------
+
+Read this entire section!
+
+### Required Software
+
+irc-8.5.4 is what I developed the IRC features on.
+
+pygame is used to display the window of past commands.
+
+If you plan to use the direct keyboard output (that is, focus a window and have the bot virtually press keys), you'll have to install PyKeyboard.
+
+### Various Details
+
+This project is incomplete.
+
+The automatic loading is currently (badly) in the display module and occurs 10 seconds after initialization. Ideally your emulator will start up to the game, where the key can be pressed to load.
+
+Automatic saving currently occurs every 5 minutes and is also handled inside the display module.
+
+Saving and loading are hardcoded to the '2' and '1' keys respectively.
+
+### Secret Key
+
+You'll need to provide your secret key in `secret.json` so the bot can log into your channel.
+
+Example `secret.json`:
+
+    {
+		"secret": "oauth:charactersofsomekind"
+    }
+
+### Userlist
+
+To enable userlist checking, create a userlist in `config.json`. The one provided by default admins me and my friends, and lets them on, while blocking everybody else. If you want to use this, you'll want to change that.
+
+### Admin List
+
+Several commands are supported in chat by default from a list of admins in the config file. They are:
+
+>	`!die`: Cleans up the process and ends gracefully.
+>	`!restart`: Cleans up a little bit and restarts the IRC, display, emulator, etc.
+>	`!save`: Forces a savestate.
+>	`!load`: Forces a load of the last savestate.
+
+### Banned Words
+
+The bot supports automatically timing out people who say words from a certain list of restricted words in any casing. There is no Levenshtein distance checker or 1337speak decoder, so people can get around it pretty easily, but it's effective at stopping Twitch faces.
+
+### Other Configuration
+
+Configuration options should be straightforward and are in `config.json`.
 
 License
 -------

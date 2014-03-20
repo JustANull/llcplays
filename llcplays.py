@@ -22,7 +22,7 @@ def main():
 
 	ircopt = None
 	winopt = None
-	users = []
+	users = None
 	admins = []
 	commands = {}
 	bannedWords = []
@@ -34,7 +34,8 @@ def main():
 		ircopt = options.IRC('irc.twitch.tv', irc[u'port'], irc[u'channel'], irc[u'username'], secret)
 		winopt = options.Window(window[u'title'], window[u'width'], window[u'height'], window[u'fontsize'], window[u'fontname'])
 
-		users = config[u'users']
+		if u'users' in config:
+			users = config[u'users']
 		admins = config[u'admins']
 		commands = config[u'commands']
 		bannedWords = config[u'bannedWords']
