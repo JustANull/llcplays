@@ -18,6 +18,10 @@ Read this entire section!
 
 ### Required Software
 
+These are all what I developed on:
+
+python 2.7.6
+
 irc-8.5.4 is what I developed the IRC features on.
 
 pygame is used to display the window of past commands.
