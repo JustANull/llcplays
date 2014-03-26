@@ -4,7 +4,7 @@ LLCPlays
 What's the point?
 -----------------
 
-This project is intended to be a complete TwitchPlaysPokemon style bot initially set up for my personal use.
+This project is intended to be a complete TwitchPlaysPokemon style bot initially set up for my personal use, but configurable for others.
 
 Can I use it?
 -------------
