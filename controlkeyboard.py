@@ -13,7 +13,7 @@ class ControlKeyboard(control.Control):
 
 	def do_command(self, cmd):
 		self.keysDown[self.commands[cmd]] = 1
-		self.k.release_key(self.commands[cmd])
+		self.k.press_key(self.commands[cmd])
 
 	def update(self):
 		for key in self.keysDown:
