@@ -16,7 +16,7 @@ class ControlKeyboard(control.Control):
 		self.k.release_key(self.commands[cmd])
 
 	def update(self):
-		for key in keysDown:
+		for key in self.keysDown:
 			if self.keysDown[key] == 0:
 				self.k.release_key(key)
 				del self.keysDown[key]
