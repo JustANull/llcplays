@@ -30,7 +30,7 @@ def main():
 		irc = config[u'irc']
 		window = config[u'window']
 
-		ircopt = options.IRC('irc.twitch.tv', irc[u'port'], irc[u'channel'], irc[u'username'], secret)
+		ircopt = options.IRC(irc[u'server'], irc[u'port'], irc[u'channel'], irc[u'username'], secret)
 		winopt = options.Window(window[u'title'], window[u'width'], window[u'height'], window[u'fontsize'], window[u'fontname'])
 
 		if u'users' in config:

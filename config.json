@@ -2,6 +2,7 @@
 	"users": ["just_a_null", "drewbiedoobydoo", "ma1dridge", "zelshey", "shatteredaether", "thisisdaleb", "roly_25", "ianthejay"],
 	"admins": ["llcplays", "just_a_null", "ma1dridge"],
 	"irc": {
+		"server": "irc.twitch.tv",
 		"username": "llcplays",
 		"port": 6667,
 		"channel": "#llcplays"

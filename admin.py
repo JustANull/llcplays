@@ -21,11 +21,11 @@ class Admin(subscriber.Subscriber):
 
 	def do_save(self):
 		self.publisher.get_subscriber('display').add_message('Saved the game.', '')
-		self.publisher.get_subscriber('control').raw_command(SAVE_BUTTON)
+		self.publisher.get_subscriber('control').save()
 
 	def do_load(self):
 		self.publisher.get_subscriber('display').add_message('Loaded the game.', '')
-		self.publisher.get_subscriber('control').raw_command(LOAD_BUTTON)
+		self.publisher.get_subscriber('control').load()
 
 	def on_add(self, publisher):
 		self.publisher = publisher
