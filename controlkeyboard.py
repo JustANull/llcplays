@@ -1,3 +1,4 @@
+from collections import deque
 import control
 import pykeyboard
 import time
