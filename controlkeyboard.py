@@ -17,8 +17,8 @@ class ControlKeyboard(control.Control):
 
 	def update(self):
 		for key in keysDown:
-			if keysDown[key] == 0:
+			if self.keysDown[key] == 0:
 				self.k.release_key(key)
-				del keysDown[key]
+				del self.keysDown[key]
 			else:
-				keysDown[key] = 0
+				self.keysDown[key] = 0
