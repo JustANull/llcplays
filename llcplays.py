@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 
-#note that save and load savestates are hardcoded to 2 and 1, respectively.
-
 import json
 import sys
 
@@ -47,7 +45,7 @@ def main():
 	daemon.publisher.add_subscriber('commandfilter', commandfilter.CommandFilter(filteredWords))
 	daemon.publisher.add_subscriber('display', display.Display(winopt, users, commands))
 	daemon.publisher.add_subscriber('moderator', moderator.Moderator(admins, bannedWords))
-	#daemon.publisher.add_subscriber('emulator', process.Process(['run_emulator']))
+	#daemon.publisher.add_subscriber('emulator', process.Process(['gvbam']))
 
 	control = None
 	if len(sys.argv) == 1:

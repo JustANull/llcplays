@@ -72,6 +72,6 @@ class Display(subscriber.Subscriber):
 				elif event.type == pygame.USEREVENT + 0:
 					pygame.time.set_timer(pygame.USEREVENT + 0, 0)            	#stop loading the game every 10 seconds
 					pygame.time.set_timer(pygame.USEREVENT + 1, 1000 * 60 * 5)	#start saving it every 5 minutes
-					self.publisher.get_subscriber('control').raw_command(control.LOAD_BUTTON)
+					self.publisher.get_subscriber('control').load()
 				elif event.type == pygame.USEREVENT + 1:
-					self.publisher.get_subscriber('control').raw_command(control.SAVE_BUTTON)
+					self.publisher.get_subscriber('control').save()

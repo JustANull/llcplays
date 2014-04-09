@@ -1,8 +1,5 @@
 import subscriber
 
-LOAD_BUTTON = '1'
-SAVE_BUTTON = '2'
-
 class Control(subscriber.Subscriber):
 	def __init__(self, users, commands):
 		self.users = users
@@ -25,3 +22,9 @@ class Control(subscriber.Subscriber):
 
 	def do_command(self, cmd):
 		pass
+
+	def save(self):
+		raise Exception('save unimplemented in control class')
+
+	def load(self):
+		raise Exception('load unimplemented in control class')
