@@ -26,9 +26,12 @@
 		"l":              	"q",
 		"r":              	"e"
 	},
+	"_comment1": "These words are not filtered for admins; They can speak freely",
 	"bannedWords": ["kappa"],
+	"_comment2": "These words are filtered for everybody; You will be immediately timed out once the bot sees you",
+	"filteredWords": ["fullReSett"],
 	"window": {
-		"title":   	"Song: Darude - Sandstorm",
+		"title":   	"LLC Plays!",
 		"width":   	320,
 		"height":  	240,
 		"fontsize":	18,

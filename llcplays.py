@@ -9,6 +9,7 @@ import bot
 import options
 
 import admin
+import commandfilter
 import display
 import moderator
 import process
@@ -39,9 +40,11 @@ def main():
 		admins = config[u'admins']
 		commands = config[u'commands']
 		bannedWords = config[u'bannedWords']
+		filteredWords = config[u'filteredWords']
 
 	daemon = bot.Twitch(ircopt)
 	daemon.publisher.add_subscriber('admin', admin.Admin(admins))
+	daemon.publisher.add_subscriber('commandfilter', commandfilter.CommandFilter(filteredWords))
 	daemon.publisher.add_subscriber('display', display.Display(winopt, users, commands))
 	daemon.publisher.add_subscriber('moderator', moderator.Moderator(admins, bannedWords))
 	#daemon.publisher.add_subscriber('emulator', process.Process(['run_emulator']))
