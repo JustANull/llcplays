@@ -23,7 +23,7 @@ class ControlKeyboard(control.Control):
 		self.doLoad = True
 
 	def press_key(self, cmd):
-		if not cmd in self.keysDown[cmd]:
+		if not cmd in self.keysDown:
 			self.keysDown[cmd] = deque()
 
 		self.keysDown[cmd].append('press')
@@ -43,7 +43,7 @@ class ControlKeyboard(control.Control):
 			self.k.press_key(self.k.function_keys[1])
 			time.sleep(50)
 			self.k.release_key(self.k.function_keys[1])
-			self.k.release_key(self.k.release_key)
+			self.k.release_key(self.k.shift_key)
 
 		for key in self.keysDown:
 			if len(self.keysDown[key]) > 0:
