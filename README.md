@@ -9,7 +9,7 @@ This project is intended to be a complete TwitchPlaysPokemon style bot initially
 Can I use it?
 -------------
 
-Knock yourself out. I'm not going to stop you. If you want to remove the userlist support (e.g. allow anybody to use your bot) you'll need to edit `control.py`.
+Knock yourself out. I'm not going to stop you. If you want to remove the userlist, remove the user list from the config.
 
 How do I use it?
 ----------------
@@ -28,16 +28,14 @@ These are all what I developed on:
 
 `pygame` is used to display the window of past commands.
 
-If you plan to use the direct keyboard output (that is, focus a window and have the bot virtually press keys), you'll have to install `PyKeyboard`. Otherwise, standard out is the default. You can specify a file in the command line.
+If you plan to use the direct keyboard output (that is, focus a window and have the bot virtually press keys), you'll have to install `PyUserInput`. Otherwise, standard out is the default. You can specify a file in the command line.
 
 ### Command Line
 
     ./llcplays.py  
-    Will run, outputting commands to standard out.  
-    ./llcplays.py stdout  
-    ditto  
-    ./llcplays.py keyboard  
     Will run, outputting commands to the keyboard.  
+    ./llcplays.py stdout  
+    Will run, outputting commands to standard out.  
     ./llcplays.py stdout filename  
     Will run, outputting commands to the file with the given name.
 

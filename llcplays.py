@@ -49,13 +49,10 @@ def main():
 
 	control = None
 	if len(sys.argv) == 1:
-		import controlstdout
-		control = controlstdout.ControlStdout(users, commands)
+		import controlkeyboard
+		control = controlkeyboard.ControlKeyboard(users, commands)
 	elif len(sys.argv) == 2:
-		if sys.argv[1] == 'keyboard':
-			import controlkeyboard
-			control = controlkeyboard.ControlKeyboard(users, commands)
-		elif sys.argv[1] == 'stdout':
+		if sys.argv[1] == 'stdout':
 			import controlstdout
 			control = controlstdout.ControlStdout(users, commands)
 		else:
