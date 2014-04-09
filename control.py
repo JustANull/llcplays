@@ -17,6 +17,8 @@ class Control(subscriber.Subscriber):
 
 			if allowedUser and args[1].arguments[0] in self.commands:
 				self.do_command(args[1].arguments[0])
+		elif kind == 'update':
+			self.update()
 
 	def raw_command(self, cmd):
 		pass

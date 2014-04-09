@@ -13,3 +13,6 @@ class ControlStdout(control.Control):
 	def do_command(self, cmd):
 		self.fp.write(self.commands[cmd])
 		self.fp.flush()
+
+	def update(self):
+		pass
