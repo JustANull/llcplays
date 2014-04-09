@@ -9,13 +9,14 @@ class Control(subscriber.Subscriber):
 		self.commands = commands
 
 	def message(self, kind, *args):
-		allowedUser = True
+		if kind == 'pubmsg':
+			allowedUser = True
 
-		if self.users:
-			allowedUser = args[1].source.nick in self.users
+			if self.users:
+				allowedUser = args[1].source.nick in self.users
 
-		if kind == 'pubmsg' and allowedUser and args[1].arguments[0] in self.commands:
-			self.do_command(args[1].arguments[0])
+			if allowedUser and args[1].arguments[0] in self.commands:
+				self.do_command(args[1].arguments[0])
 
 	def raw_command(self, cmd):
 		pass

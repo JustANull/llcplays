@@ -56,13 +56,14 @@ class Display(subscriber.Subscriber):
 		self.render()
 
 	def message(self, kind, *args):
-		allowedUser = True
+		if kind == 'pubmsg':
+			allowedUser = True
 
-		if self.users:
-			allowedUser = args[1].source.nick in self.users
+			if self.users:
+				allowedUser = args[1].source.nick in self.users
 
-		if kind == 'pubmsg' and allowedUser and args[1].arguments[0] in self.commands:
-			self.add_message(args[1].source.nick, args[1].arguments[0])
+			if allowedUser and args[1].arguments[0] in self.commands:
+				self.add_message(args[1].source.nick, args[1].arguments[0])
 		elif kind == 'update':
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
