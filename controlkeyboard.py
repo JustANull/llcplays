@@ -33,15 +33,15 @@ class ControlKeyboard(control.Control):
 		if self.doLoad:
 			self.doLoad = False
 			self.k.press_key(self.k.function_keys[1])
-			time.sleep(50)
+			time.sleep(0.05)
 			self.k.release_key(self.k.function_keys[1])
 
 		if self.doSave:
 			self.doSave = False
 			self.k.press_key(self.k.shift_key)
-			time.sleep(50)
+			time.sleep(0.05)
 			self.k.press_key(self.k.function_keys[1])
-			time.sleep(50)
+			time.sleep(0.05)
 			self.k.release_key(self.k.function_keys[1])
 			self.k.release_key(self.k.shift_key)
 
