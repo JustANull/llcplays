@@ -19,6 +19,6 @@ class ControlKeyboard(control.Control):
 		for key in self.keysDown:
 			if self.keysDown[key] == 0:
 				self.k.release_key(key)
-				del self.keysDown[key]
+				self.keysDown[key] = -1
 			else:
 				self.keysDown[key] = 0
