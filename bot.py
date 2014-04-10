@@ -29,7 +29,7 @@ class Twitch(irc.bot.SingleServerIRCBot):
 	def on_dccchat(self, conn, event):
 		self.publisher.message('dccchat', conn, event)
 
-	def event_loop(self, timeout = 0.1):
+	def event_loop(self, timeout = 0.2):
 		self._connect()
 
 		while self.live:

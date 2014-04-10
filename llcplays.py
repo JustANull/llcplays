@@ -22,9 +22,9 @@ def main():
 	ircopt = None
 	winopt = None
 	users = None
-	admins = []
-	commands = {}
-	bannedWords = []
+	admins = None
+	commands = None
+	bannedWords = None
 	with file('config.json') as f:
 		config = json.load(f)
 		irc = config[u'irc']

@@ -1,4 +1,3 @@
-from collections import deque
 import control
 import pykeyboard
 import time
@@ -7,7 +6,7 @@ class ControlKeyboard(control.Control):
 	def __init__(self, users, commands):
 		control.Control.__init__(self, users, commands)
 		self.k = pykeyboard.PyKeyboard()
-		self.keysDown = {}
+		self.keysDown = []
 		self.doLoad = False
 		self.doSave = False
 
@@ -24,11 +23,7 @@ class ControlKeyboard(control.Control):
 		self.doLoad = True
 
 	def press_key(self, cmd):
-		if not cmd in self.keysDown:
-			self.keysDown[cmd] = deque()
-
-		self.keysDown[cmd].append('press')
-		self.keysDown[cmd].append('release')
+		self.keysDown.append(cmd)
 
 	def update(self):
 		if self.doLoad:
@@ -47,10 +42,11 @@ class ControlKeyboard(control.Control):
 			self.k.release_key(self.k.shift_key)
 
 		for key in self.keysDown:
-			if len(self.keysDown[key]) > 0:
-				cmd = self.keysDown[key].popleft()
+			self.k.press_key(key)
 
-				if cmd == 'press':
-					self.k.press_key(key)
-				elif cmd == 'release':
-					self.k.release_key(key)
+		time.sleep(0.05)
+
+		for key in self.keysDown:
+			self.k.release_key(key)
+
+		self.keysDown = []
