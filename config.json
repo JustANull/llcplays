@@ -2,7 +2,7 @@
 	"users": ["just_a_null", "drewbiedoobydoo", "ma1dridge", "zelshey", "shatteredaether", "thisisdaleb", "roly_25", "ianthejay"],
 	"admins": ["llcplays", "just_a_null", "ma1dridge"],
 	"irc": {
-		"server": "irc.michaelwashere.tk",
+		"server": "irc.twitch.tv",
 		"username": "llcplays",
 		"port": 6667,
 		"channel": "#llcplays"
@@ -19,10 +19,7 @@
 		"l":     	"q",
 		"r":     	"e"
 	},
-	"_comment1": "These words are not filtered for admins; They can speak freely",
-	"bannedWords": ["kappa"],
-	"_comment2": "These words are filtered for everybody; You will be immediately timed out once the bot sees you",
-	"filteredWords": [],
+	"filteredWords": ["kappa"],
 	"window": {
 		"enabled": 	false,
 		"title":   	"LLC Plays!",

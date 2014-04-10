@@ -9,7 +9,6 @@ import options
 import admin
 import commandfilter
 import display
-import moderator
 import process
 import timer
 
@@ -53,12 +52,10 @@ def main():
 	def doSave():
 		daemon.publisher.get_subscriber('control').save()
 
-	daemon.publisher.add_subscriber('loadTimer', timer.Timer(20, doLoad))
-	daemon.publisher.add_subscriber('saveTimer', timer.Timer(60 * 5, doSave))
-
 	daemon.publisher.add_subscriber('admin', admin.Admin(admins))
 	daemon.publisher.add_subscriber('commandfilter', commandfilter.CommandFilter(filteredWords))
-	daemon.publisher.add_subscriber('moderator', moderator.Moderator(admins, bannedWords))
+	daemon.publisher.add_subscriber('loadTimer', timer.Timer(20, doLoad))
+	daemon.publisher.add_subscriber('saveTimer', timer.Timer(60 * 5, doSave))
 
 	if winopt:
 		daemon.publisher.add_subscriber('display', display.Display(winopt, users, commands))

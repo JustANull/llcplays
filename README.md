@@ -28,7 +28,9 @@ These are all what I developed on:
 
 `pygame` is used to display the window of past commands.
 
-If you plan to use the direct keyboard output (that is, focus a window and have the bot virtually press keys), you'll have to install `PyUserInput`. Otherwise, standard out is the default. You can specify a file in the command line.
+If you plan to use the direct keyboard output (that is, focus a window and have the bot virtually press keys), you'll have to install `PyUserInput`. Keyboard is the default. You can specify a file in the command line as well as standard out.
+
+Other versions of things here might work, but it is unclear at this time how well if at all.
 
 ### Command Line
 
@@ -43,11 +45,7 @@ If you plan to use the direct keyboard output (that is, focus a window and have 
 
 This project is incomplete.
 
-The automatic loading is currently (badly) in the display module and occurs 10 seconds after initialization. Ideally your emulator will start up to the game, where the key can be pressed to load.
-
 Automatic saving currently occurs every 5 minutes and is also handled inside the display module.
-
-Saving and loading are hardcoded to the '2' and '1' keys respectively. The codes are in `control.py`.
 
 ### Secret Key
 
@@ -62,19 +60,6 @@ Example `secret.json`:
 ### Userlist
 
 To enable userlist checking, create a userlist in `config.json`. The one provided by default admins me and my friends, and lets them on, while blocking everybody else. If you want to use this, you'll want to change that.
-
-### Default Commands
-
->	`WinWaker`: up  
->	`ResidentSleeper`: left  
->	`SwiftRage`: down  
->	`Kreygasm`: right  
->	`FrankerZ`: a  
->	`BibleThump`: b  
->	`Kappa`: start  
->	`Keepo`: select
-
-Beyond these, up/down/left/right/b/a/start/select are also commands. The exact keymap is in `config.json`.
 
 ### Admin List
 
