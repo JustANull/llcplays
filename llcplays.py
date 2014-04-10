@@ -40,7 +40,6 @@ def main():
 			users = config[u'users']
 		admins = config[u'admins']
 		commands = config[u'commands']
-		bannedWords = config[u'bannedWords']
 		filteredWords = config[u'filteredWords']
 
 	daemon = bot.Twitch(ircopt)
