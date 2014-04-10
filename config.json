@@ -2,7 +2,7 @@
 	"users": ["just_a_null", "drewbiedoobydoo", "ma1dridge", "zelshey", "shatteredaether", "thisisdaleb", "roly_25", "ianthejay"],
 	"admins": ["llcplays", "just_a_null", "ma1dridge"],
 	"irc": {
-		"server": "irc.twitch.tv",
+		"server": "irc.michaelwashere.tk",
 		"username": "llcplays",
 		"port": 6667,
 		"channel": "#llcplays"
@@ -24,6 +24,7 @@
 	"_comment2": "These words are filtered for everybody; You will be immediately timed out once the bot sees you",
 	"filteredWords": [],
 	"window": {
+		"enabled": 	false,
 		"title":   	"LLC Plays!",
 		"width":   	320,
 		"height":  	240,

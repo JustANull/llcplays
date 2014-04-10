@@ -3,6 +3,16 @@ import math
 import pygame
 import subscriber
 
+class DummyDisplay(subscriber.Subscriber):
+	def __init__(self):
+		pass
+
+	def add_message(self, left, right):
+		pass
+
+	def message(self, kind, *args):
+		pass
+
 class Display(subscriber.Subscriber):
 	def __init__(self, winopt, users, commands):
 		self.messages = []
@@ -18,7 +28,6 @@ class Display(subscriber.Subscriber):
 	def on_add(self, publisher):
 		self.publisher = publisher
 		pygame.init()
-		pygame.time.set_timer(pygame.USEREVENT + 0, 10000)	#in 10 seconds, load the saved game; assume that emulator is started
 		self.screen = pygame.display.set_mode((self.width, self.height))
 		pygame.display.set_caption('')
 		self.font = pygame.font.SysFont(self.fontname, self.fontsize)
@@ -69,9 +78,3 @@ class Display(subscriber.Subscriber):
 				if event.type == pygame.QUIT:
 					self.publisher.parent.say('The bot is going down!')
 					self.publisher.parent.live = False
-				elif event.type == pygame.USEREVENT + 0:
-					pygame.time.set_timer(pygame.USEREVENT + 0, 0)            	#stop loading the game every 10 seconds
-					pygame.time.set_timer(pygame.USEREVENT + 1, 1000 * 60 * 5)	#start saving it every 5 minutes
-					self.publisher.get_subscriber('control').load()
-				elif event.type == pygame.USEREVENT + 1:
-					self.publisher.get_subscriber('control').save()
